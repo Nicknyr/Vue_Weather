@@ -1,11 +1,15 @@
 <template>
   <div class="container">
+    <h1>Weather</h1>
     <ul>
-      <li>{{ town }}</li>
-      <li>{{ weather }}</li>
-      <li>{{ sunrise }}</li>
-      <li>{{ sunset }}</li>
+      <li>Town: {{ town }}</li>
+      <li>Forecast: {{ forecast }}</li>
+      <li>Sunrise: {{ sunrise }}</li>
+      <li>Sunset: {{ sunset }}</li>
+      <li><img :src="`https://openweathermap.org/img/w/${iconCode}.png`"/></li>
     </ul>
+    <br/>
+    <!--<img :src="logo"/>-->
     <button v-on:click="hello"></button>
     <button v-on:click="convert"></button>
   </div>
@@ -13,7 +17,8 @@
 
 <script>
 import axios from 'axios'
-import key from '../config.js';
+import key from '../config.js'
+import logo from '../assets/logo.png'
 
 export default {
   name: 'Main',
@@ -27,18 +32,22 @@ export default {
       response: '',
       sunrise: '',
       sunset: '',
-      weather: ''
+      forecast: '',
+      iconCode: '',
+      logo: logo
     }
   },
   mounted() {
     const api = key.api_key;
+
     axios.get(`https://api.openweathermap.org/data/2.5/weather?zip=12721,us&APPID=`+`${api}`)
         .then((response) => {
           this.info = response;
           this.town = response.data.name;
           this.sunrise = response.data.sys.sunrise;
           this.sunset = response.data.sys.sunset;
-          this.weather = response.data.weather[0].main;
+          this.forecast = response.data.weather[0].main;
+          this.iconCode = response.data.weather[0].icon;
           console.log(response);
         })
         .catch((err) => {
@@ -49,7 +58,7 @@ export default {
     hello() {
       alert('hi');
     },
-    convert() {
+    convert(temp) {
       alert('convert')
     }
   }
@@ -72,6 +81,23 @@ Add 32 to this number.
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .container {
-    border: 2px solid red;
+    background: #222930;
+    color: #E9E9E9;
   }
+
+  ul {
+    list-style-type: none;
+    display: inline-block;
+  }
+
+  ul li {
+    color: #4EB1BA;
+    display: inline;
+    margin: .5em;
+  }
+
+  /* #222930
+    #4EB1BA
+    #E9E9E9
+  */
 </style>
